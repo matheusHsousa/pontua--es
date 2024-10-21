@@ -1,0 +1,149 @@
+  body {
+      font-family: Arial, sans-serif;
+      /* Fundo cinza claro */
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 97vh;
+      /* Altura total da tela */
+      box-sizing: border-box;
+      overflow: hidden
+  }
+
+  .container {
+      background-color: #fff;
+      /* Fundo branco para a área do aplicativo */
+      border-radius: 10px;
+      padding: 20px;
+      width: 90%;
+      max-width: 500px;
+      /* Limita a largura máxima */
+      text-align: center;
+      position: relative;
+      /* Para posicionar o modal */
+  }
+
+  h1 {
+      color: #c0392b;
+      /* Vermelho escuro */
+  }
+
+  .qrCode {
+      margin: 10px;
+      padding: 10px;
+      border: 1px solid #c0392b;
+      /* Borda vermelha */
+      border-radius: 5px;
+      background-color: #e74c3c;
+      /* Fundo vermelho claro */
+      color: #fff;
+      /* Texto branco */
+      cursor: pointer;
+      display: inline-block;
+      transition: background-color 0.3s;
+      /* Efeito de transição */
+  }
+
+  .qrCode:hover {
+      background-color: #c0392b;
+      /* Escurece ao passar o mouse */
+  }
+
+  .team {
+      margin-top: 20px;
+      background-color: #ecf0f1;
+      /* Fundo cinza claro */
+      border: 1px solid #bdc3c7;
+      /* Borda cinza */
+      border-radius: 5px;
+      padding: 15px;
+  }
+
+  /* Estilo do modal */
+  .modal {
+      display: none;
+      /* Oculto por padrão */
+      position: fixed;
+      /* Fixo na tela */
+      z-index: 1;
+      /* Em cima */
+      left: 0;
+      top: 0;
+      width: 100%;
+      /* Largura total */
+      height: 100%;
+      /* Altura total */
+      overflow: auto;
+      /* Adiciona rolagem se necessário */
+      background-color: rgba(0, 0, 0, 0.6);
+      /* Fundo preto com transparência */
+  }
+
+  .modal-content {
+      background-color: #fff;
+      /* Fundo branco */
+      margin: 50% auto;
+      /* 15% do topo e centralizado */
+      padding: 20px;
+      /* Borda vermelha */
+      border-radius: 10px;
+      width: 80%;
+      /* Largura do modal */
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  }
+
+  .close {
+      color: #c0392b;
+      /* Vermelho */
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+      color: #a93226;
+      /* Vermelho mais escuro */
+      text-decoration: none;
+      cursor: pointer;
+  }
+
+  input[type="number"],
+  input[type="password"] {
+      width: calc(100% - 20px);
+      /* Ajusta para o preenchimento */
+      padding: 10px;
+      margin: 5px 0;
+      border: 1px solid #bdc3c7;
+      /* Borda cinza */
+      border-radius: 5px;
+  }
+
+  button {
+      background-color: #c0392b;
+      /* Vermelho */
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+  }
+
+  button:hover {
+      background-color: #a93226;
+      /* Vermelho mais escuro */
+  }
+
+  .note {
+      margin: 10px 0;
+      /* Margem para a exibição da nota */
+      color: #7f8c8d;
+      /* Cinza */
+  }
+
+  .hidden {
+      display: none;
+  }

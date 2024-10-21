@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pódio de Pontuação</title>
+    <script src="script.js" type="module" defer></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            /* Remover margens padrão */
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            /* Ocultar até a animação de abertura */
+        }
+
+        .curtain {
+            position: fixed;
+            /* Mude para fixed para cobrir toda a tela */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            /* Para cobrir toda a largura da tela */
+            height: 100vh;
+            /* Para cobrir toda a altura da tela */
+            background: rgba(255, 0, 0, 1);
+            transition: all 1s ease-in-out;
+            z-index: 10;
+            transform: scaleX(1);
+            /* Posição inicial */
+        }
+
+        .curtain.open {
+            transform: scaleX(0);
+            /* Abre a cortina a partir do centro */
+        }
+
+        .podium {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 50px;
+            gap: 65px;
+            /* Espaçamento entre os times */
+            position: relative;
+            /* Para o confete */
+            z-index: 1;
+            /* Para ficar acima da cortina */
+        }
+
+        .team {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            padding: 20px;
+            width: 84%;
+            /* Para responsividade */
+            max-width: 400px;
+            /* Largura máxima */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            /* Transição para animações */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            font-size: 1.5em;
+            /* Aumenta o tamanho da fonte */
+            position: relative;
+            /* Para posicionamento de bordas */
+        }
+
+        .trophy {
+            font-size: 2.5em;
+            color: gold;
+            margin-bottom: 10px;
+        }
+
+
+        .gold {
+            background-color: gold;
+            transform: scale(1.05);
+            /* Animação leve de aumento */
+            box-shadow: 0 8px 16px rgba(255, 215, 0, 0.5);
+            /* Sombra dourada */
+        }
+
+        .silver {
+            background-color: silver;
+            box-shadow: 0 6px 12px rgba(192, 192, 192, 0.5);
+            /* Sombra prateada */
+        }
+
+        .bronze {
+            background-color: #cd7f32;
+            box-shadow: 0 6px 12px rgba(205, 126, 50, 0.5);
+            /* Sombra bronze */
+        }
+
+        /* Animação para destacar o time líder */
+        @keyframes highlight {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .highlight {
+            animation: highlight 1s infinite;
+            /* Animação contínua */
+        }
+
+        /* Efeito de confete */
+        .confetti {
+            position: fixed;
+            /* Mude para fixed para cobrir toda a tela */
+            pointer-events: none;
+            z-index: 5;
+            left: 0;
+            /* Alinhar à esquerda */
+            right: 0;
+            /* Alinhar à direita */
+            top: -20;
+            /* Alinhar ao topo */
+            bottom: 0;
+            /* Alinhar à parte inferior */
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100vh);
+            }
+
+            100% {
+                transform: translateY(100vh);
+            }
+        }
+
+        .confetti-piece {
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            animation: fall linear infinite;
+            /* Ajustar a animação para garantir que caia até o fundo */
+        }
+
+        /* Cor das peças de confete */
+        .confetti-piece:nth-child(odd) {
+            background-color: #ff5733;
+        }
+
+        .confetti-piece:nth-child(even) {
+            background-color: #33ff57;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="curtain" id="curtain"></div>
+    <h1>Pódio de Pontuação</h1>
+    <div class="podium" id="podium">
+        <div class="crown" id="crown">
+            <img style="width: 205px; position: absolute; left: 12%; top: -40px;"
+                src="https://www.publicdomainpictures.net/pictures/410000/nahled/laurel-wreath-clipart-16299739768za.png"
+                alt="">
+            <div class="trophy">🏆</div>
+
+            <span id="scoreLeader" style="font-size: 20px;">0</span>
+            <div id="leaderTeamName" style="font-size: 18px;">Time Líder</div>
+            <!-- Novo elemento para o nome do time -->
+        </div>
+        <div id="teamsContainer" style="display: flex; flex-direction: column; gap: 20px; width: 100%;"></div>
+        <!-- Container para os times -->
+    </div>
+
+    <div class="confetti" id="confetti"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDxb6M9TPfUuql-7Hdcn7U9rzyXKB3l42s",
+            authDomain: "pontapp-687f4.firebaseapp.com",
+            projectId: "pontapp-687f4",
+            storageBucket: "pontapp-687f4.appspot.com",
+            messagingSenderId: "180723066236",
+            appId: "1:180723066236:web:27887423935780df6030f9"
+        };
+
+        // Inicializa o Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Função para criar confete
+        function createConfetti() {
+            const confettiContainer = document.getElementById('confetti');
+            // Remove confetes anteriores
+            confettiContainer.innerHTML = '';
+            for (let i = 0; i < 100; i++) {
+                const piece = document.createElement('div');
+                piece.classList.add('confetti-piece');
+                piece.style.left = Math.random() * 100 + 'vw';
+                piece.style.animationDuration = Math.random() * 3 + 2 + 's';
+                piece.style.animationDelay = Math.random() * 2 + 's';
+                confettiContainer.appendChild(piece);
+            }
+        }
+
+        // Função para atualizar a pontuação no pódio
+        async function updatePodium() {
+            const teams = ['A', 'B', 'C', 'D'];
+            const scores = [];
+
+            try {
+                for (const team of teams) {
+                    const teamRef = doc(db, "teams", `team${team}`);
+                    const teamDoc = await getDoc(teamRef);
+                    if (teamDoc.exists()) {
+                        const score = teamDoc.data().score || 0;
+                        scores.push({ team: `Time ${team}`, score: score });
+                    }
+                }
+
+                // Classifica as pontuações do maior para o menor
+                scores.sort((a, b) => b.score - a.score);
+
+                // Limpa o container dos times
+                const teamsContainer = document.getElementById('teamsContainer');
+                teamsContainer.innerHTML = ''; // Limpa os times antigos
+
+                // Atualiza a visualização do pódio
+                scores.forEach((entry, index) => {
+                    const teamDiv = document.createElement('div');
+                    teamDiv.className = 'team';
+                    teamDiv.innerHTML = `${entry.team}: <span id="score${entry.team.charAt(entry.team.length - 1)}">${entry.score}</span>`;
+
+                    // Atualiza a coroa de louros do time líder
+                    if (index === 0) {
+                        const crown = document.getElementById('crown');
+                        crown.style.display = 'block';
+                        document.getElementById('scoreLeader').textContent = entry.score;
+                        document.getElementById('leaderTeamName').textContent = entry.team; // Atualiza o nome do time líder
+                        teamDiv.classList.add('gold', 'highlight');
+                    }
+                    else if (index === 1) {
+                        teamDiv.classList.add('silver');
+                    } else if (index === 2) {
+                        teamDiv.classList.add('bronze');
+                    }
+
+                    teamsContainer.appendChild(teamDiv); // Adiciona cada time na ordem correta
+                });
+
+                // Inicia o confete
+                createConfetti();
+            } catch (error) {
+                console.error("Erro ao atualizar o pódio: ", error);
+            }
+        }
+
+        // Chama a função ao carregar a página
+        window.addEventListener('load', () => {
+            document.getElementById('curtain').classList.add('open');
+            document.querySelector('h1').style.opacity = 1; // Exibe o título após a abertura da cortina
+            updatePodium();
+        });
+    </script>
+</body>
+
+</html>
