@@ -1,6 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
 import { getFirestore, doc, setDoc, getDoc, updateDoc, getDocs, collection, increment } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
+
+
+
 // Configuração do Firebase
 const firebaseConfig = {
     apiKey: "AIzaSyDxb6M9TPfUuql-7Hdcn7U9rzyXKB3l42s",
@@ -46,9 +49,14 @@ function checkPassword() {
 }
 
 // Função para mostrar o time correspondente ao parâmetro da URL
+// Função para mostrar o time correspondente ao parâmetro da URL
 function showTeamFromURL() {
     const urlParams = new URLSearchParams(window.location.search);
     const team = urlParams.get('team');
+
+    // Elemento do botão de penalização e redirecionamento
+    const penaltyButton = document.querySelector("button[onclick='aa()']");
+    const redirectButtons = document.getElementById("redirectButtons");
 
     if (team) {
         // Esconde todos os times
@@ -62,11 +70,20 @@ function showTeamFromURL() {
         } else {
             alert("Time não encontrado!");
         }
+
+        // Esconde o botão de penalização e exibe os botões de redirecionamento
+        penaltyButton.style.display = "none";
+        redirectButtons.style.display = "none"; // Certifique-se de esconder se o time estiver selecionado
+    } else {
+        // Mostra o botão de penalização
+        penaltyButton.style.display = "block";
+        redirectButtons.style.display = "block"; // Mostra os botões de redirecionamento
     }
 }
 
+
 // Função para adicionar pontuação
-window.addScore = async function(team) {
+window.addScore = async function (team) {
     const scoreInput = document.getElementById(`inputScore${team}`);
     const score = parseInt(scoreInput.value);
 
@@ -74,6 +91,8 @@ window.addScore = async function(team) {
         alert("Por favor, insira uma pontuação válida!");
         return;
     }
+
+    console.log(`Adicionando ${score} pontos ao Time ${team}`); // Log para verificar a chamada
 
     try {
         const teamRef = doc(db, "teams", `team${team}`);
@@ -86,11 +105,33 @@ window.addScore = async function(team) {
 
         // Atualiza a exibição da pontuação
         updateScoreDisplay();
+
+        // Exibe a notificação temporária
+        displayNotification(team, score);
     } catch (error) {
         console.error("Erro ao adicionar pontuação: ", error);
         alert("Houve um erro ao adicionar a pontuação. Tente novamente.");
     }
 };
+
+function displayNotification(team, score) {
+    const notificationElement = document.getElementById("notificacao");
+
+    // Define o texto da notificação
+    if(score > 0){
+        notificationElement.innerText = `+${score} pontos!`;
+    }else{
+        notificationElement.innerText = `${score} pontos!`;
+    }
+
+    // Exibe a notificação
+    notificationElement.style.display = "block";
+
+    // Define um tempo para remover a notificação (exemplo: 3 segundos)
+    setTimeout(() => {
+        notificationElement.style.display = "none"; // Esconde a notificação após 3 segundos
+    }, 2000);
+}
 
 // Função para atualizar a exibição da pontuação e das notas
 async function updateScoreDisplay() {
@@ -137,3 +178,40 @@ window.addEventListener('load', () => {
     showTeamFromURL(); // Mostra o time a partir da URL
     openModal(); // Abre o modal automaticamente ao carregar a página
 });
+
+
+
+function closePenaltyModal() {
+    const penaltyModal = document.getElementById("penaltyModal");
+    penaltyModal.style.display = "none"; // Oculta o modal
+}
+
+// Função para aplicar a penalização
+document.getElementById("submitPenalty").onclick = async function () {
+    const team = document.getElementById("penaltyTeam").value;
+    const penaltyPoints = parseInt(document.getElementById("penaltyPoints").value);
+
+    if (isNaN(penaltyPoints) || penaltyPoints <= 0) {
+        alert("Por favor, insira uma penalização válida!");
+        return;
+    }
+
+    try {
+        const teamRef = doc(db, "teams", `team${team}`);
+        await updateDoc(teamRef, {
+            score: increment(-penaltyPoints) // Subtrai os pontos
+        });
+
+        // Atualiza a exibição da pontuação
+        updateScoreDisplay();
+
+        // Fecha o modal
+        closePenaltyModal();
+
+        // Exibe notificação
+        displayNotification(team, -penaltyPoints);
+    } catch (error) {
+        console.error("Erro ao aplicar penalização: ", error);
+        alert("Houve um erro ao aplicar a penalização. Tente novamente.");
+    }
+};

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <title>Sistema de Pontuação</title>
@@ -8,21 +9,34 @@
     <script src="script.js" type="module" defer></script>
     <link rel="manifest" href="manifest.json">
 </head>
+
 <body>
     <div class="container">
-       
-       <div style="display: flex; justify-content: end;">
-        <span class="podium-icon" onclick="window.location.href='dashboard.html'" style="font-size: 20px; cursor: pointer; text-align: end;">🏆</span>
-       </div>        
+        <button onclick="aa()" style="display: none;">Penalizar Time</button> <!-- Inicialmente oculto -->
+
+        <div style="display: flex; justify-content: end;">
+            <span class="podium-icon" onclick="window.location.href='dashboard.html'"
+                style="font-size: 20px; cursor: pointer; text-align: end;">🏆</span>
+        </div>
+
+        <div id="redirectButtons" style="display: none;">
+            <div style="display: flex; flex-direction: column; width: 100%; gap: 30px; height: 70px; margin-top: 40px;">
+                <button onclick="window.location.href='?team=A'" style="padding: 20px 15px; background-color: #595959;">Time A</button>
+                <button onclick="window.location.href='?team=B'" style="padding: 20px 15px; background-color: #595959;">Time B</button>
+                <button onclick="window.location.href='?team=C'" style="padding: 20px 15px; background-color: #595959;">Time C</button>
+                <button onclick="window.location.href='?team=D'" style="padding: 20px 15px; background-color: #595959;">Time D</button>
+            </div>
+        </div>      
 
         <div id="teamA" class="team hidden">
             <div style="display: flex; justify-content: end;">
-                <div class="score" id="scoreA">0</div> 
+                <div class="score" id="scoreA">0</div>
                 <span>pts.</span>
             </div>
             <h2>Time A</h2>
             <div style="display: flex; flex-direction: column; align-items: center;">
-                <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt="" style="width: 90%;">
+                <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt=""
+                    style="width: 90%;">
             </div>
             <input type="number" id="inputScoreA" placeholder="Adicionar Pontuação">
             <button onclick="addScore('A')">Adicionar Pontuação</button>
@@ -34,36 +48,40 @@
             </div>
             <h2>Time B</h2>
             <div style="display: flex; flex-direction: column; align-items: center;">
-                <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt="" style="width: 90%;">
+                <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt=""
+                    style="width: 90%;">
             </div>
             <input type="number" id="inputScoreB" placeholder="Adicionar Pontuação">
             <button onclick="addScore('B')">Adicionar Pontuação</button>
         </div>
         <div id="teamC" class="team hidden">
             <div style="display: flex; justify-content: end;">
-                <div class="score" id="scoreC">0</div> 
+                <div class="score" id="scoreC">0</div>
                 <span>pts.</span>
             </div>
             <h2>Time C</h2>
             <div style="display: flex; flex-direction: column; align-items: center;">
-                <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt="" style="width: 90%;">
+                <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt=""
+                    style="width: 90%;">
             </div>
             <input type="number" id="inputScoreC" placeholder="Adicionar Pontuação">
             <button onclick="addScore('C')">Adicionar Pontuação</button>
         </div>
         <div id="teamD" class="team hidden">
             <div style="display: flex; justify-content: end;">
-                <div class="score" id="scoreD">0</div> 
+                <div class="score" id="scoreD">0</div>
                 <span>pts.</span>
             </div>
             <h2>Time D</h2>
             <div style="display: flex; flex-direction: column; align-items: center;">
-                <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt="" style="width: 90%;">
+                <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt=""
+                    style="width: 90%;">
             </div>
             <input type="number" id="inputScoreD" placeholder="Adicionar Pontuação">
             <button onclick="addScore('D')">Adicionar Pontuação</button>
         </div>
     </div>
+
 
     <!-- Modal para entrada da senha -->
     <div id="passwordModal" class="modal">
@@ -74,5 +92,39 @@
         </div>
     </div>
 
+    <div id="penaltyModal" class="modal">
+        <div class="modal-content" style="display: flex; flex-direction: column;">
+            <h2>Penalizar Time</h2>
+            <label for="penaltyTeam">Escolha o Time:</label>
+            <select id="penaltyTeam" style="padding: 8px; border-radius: 5px; font-size: 16px;">
+                <option value="A">Time A</option>
+                <option value="B">Time B</option>
+                <option value="C">Time C</option>
+                <option value="D">Time D</option>
+            </select>
+            <input type="number" id="penaltyPoints" placeholder="Pontos a subtrair">
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="submitPenalty">Aplicar Penalização</button>
+                <button onclick="closePenaltyModal()">Cancelar</button>
+            </div>
+      
+        </div>
+    </div>
+
+    <div id="notificacao" style="display: none;"></div>
+
+    <script>
+        // Função para abrir o modal de penalização
+        function aa() {
+            const penaltyModal = document.getElementById("penaltyModal");
+            penaltyModal.style.display = "block"; // Mostra o modal
+        }
+
+        function closePenaltyModal() {
+            const penaltyModal = document.getElementById("penaltyModal");
+            penaltyModal.style.display = "none"; // Oculta o modal
+        }
+    </script>
 </body>
+
 </html>
