@@ -45,18 +45,26 @@ function closeModal() {
 }
 
 const senhas = [
-    "1972", // Senha 1
-    "1234", // Senha 2
-    "5678", // Senha 3
-    "abcd", // Senha 4
-    "efgh", // Senha 5
-    "ijkl", // Senha 6
-    "mnop", // Senha 7
-    "qrst", // Senha 8
-    "uvwx", // Senha 9
-    "yz12", // Senha 10
-    "3456", // Senha 11
-    "7890"  // Senha 12
+    "Thiago",
+    "Álvaro",
+    "⁠Júlia", 
+    "⁠Matheus",
+    "⁠Mariana Mendes",
+    "⁠Ana Camila",
+    "Rômulo",
+    "Mari Chaves",
+    "⁠Luana",
+    "⁠Lucas",
+    "Gabriel",
+    "DANIEL",
+    "Cristhian",
+    "Marjorie",
+    "Kaique",
+    "Lander",
+    "Edward",
+    "Gustavo",
+    "⁠Nicollas",
+    "⁠Andressa",
 ]
 
 let user = ''
