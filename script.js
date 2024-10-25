@@ -37,11 +37,30 @@ function closeModal() {
     document.getElementById("modalPassword").value = ''; // Limpa o campo da senha
 }
 
+const senhas = [
+    "1972", // Senha 1
+    "1234", // Senha 2
+    "5678", // Senha 3
+    "abcd", // Senha 4
+    "efgh", // Senha 5
+    "ijkl", // Senha 6
+    "mnop", // Senha 7
+    "qrst", // Senha 8
+    "uvwx", // Senha 9
+    "yz12", // Senha 10
+    "3456", // Senha 11
+    "7890"  // Senha 12
+]
+
+let user = ''
+
 // Função para verificar a senha
 function checkPassword() {
     const passwordInput = document.getElementById("modalPassword").value;
 
-    if (passwordInput === "1972") {
+    if (senhas.includes(passwordInput)) {
+        user = passwordInput;
+        console.log(user)
         closeModal(); // Fecha o modal
     } else {
         alert("Senha incorreta!");
@@ -82,7 +101,22 @@ function showTeamFromURL() {
 }
 
 
-// Função para adicionar pontuação
+async function addScoreHistory(team, user, points) {
+    try {
+        const historyRef = collection(db, "scoreHistory");
+        await setDoc(doc(historyRef), {
+            team: team,
+            user: user,
+            points: points,
+            timestamp: new Date() // A data e hora atuais
+        });
+        console.log(`Histórico registrado: ${user} adicionou ${points} pontos ao Time ${team}`);
+    } catch (error) {
+        console.error("Erro ao registrar histórico de pontuação: ", error);
+    }
+}
+
+// Modificação da função addScore para incluir histórico
 window.addScore = async function (team) {
     const scoreInput = document.getElementById(`inputScore${team}`);
     const score = parseInt(scoreInput.value);
@@ -99,6 +133,9 @@ window.addScore = async function (team) {
         await updateDoc(teamRef, {
             score: increment(score)
         });
+
+        // Adicionar ao histórico de pontuação
+        await addScoreHistory(team, user, score);
 
         // Limpa os campos de entrada
         scoreInput.value = '';
@@ -201,6 +238,9 @@ document.getElementById("submitPenalty").onclick = async function () {
         await updateDoc(teamRef, {
             score: increment(-penaltyPoints) // Subtrai os pontos
         });
+
+        // Adicionar ao histórico de penalização
+        await addScoreHistory(team, user, -penaltyPoints);
 
         // Atualiza a exibição da pontuação
         updateScoreDisplay();

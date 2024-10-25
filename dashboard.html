@@ -13,7 +13,6 @@
             text-align: center;
             padding: 20px;
             margin: 0;
-            /* Remover margens padrão */
         }
 
         h1 {
@@ -21,28 +20,22 @@
             margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
             opacity: 0;
-            /* Ocultar até a animação de abertura */
         }
 
         .curtain {
             position: fixed;
-            /* Mude para fixed para cobrir toda a tela */
             top: 0;
             left: 0;
             width: 100vw;
-            /* Para cobrir toda a largura da tela */
             height: 100vh;
-            /* Para cobrir toda a altura da tela */
             background: rgba(255, 0, 0, 1);
             transition: all 1s ease-in-out;
             z-index: 10;
             transform: scaleX(1);
-            /* Posição inicial */
         }
 
         .curtain.open {
             transform: scaleX(0);
-            /* Abre a cortina a partir do centro */
         }
 
         .podium {
@@ -51,11 +44,8 @@
             align-items: center;
             margin-top: 50px;
             gap: 65px;
-            /* Espaçamento entre os times */
             position: relative;
-            /* Para o confete */
             z-index: 1;
-            /* Para ficar acima da cortina */
         }
 
         .team {
@@ -64,16 +54,12 @@
             border-radius: 15px;
             padding: 20px;
             width: 84%;
-            /* Para responsividade */
             max-width: 400px;
-            /* Largura máxima */
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            /* Transição para animações */
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             font-size: 1.5em;
-            /* Aumenta o tamanho da fonte */
             position: relative;
-            /* Para posicionamento de bordas */
+            cursor: pointer;
         }
 
         .trophy {
@@ -82,28 +68,26 @@
             margin-bottom: 10px;
         }
 
-
         .gold {
             background-color: gold;
             transform: scale(1.05);
-            /* Animação leve de aumento */
             box-shadow: 0 8px 16px rgba(255, 215, 0, 0.5);
-            /* Sombra dourada */
         }
 
         .silver {
             background-color: silver;
             box-shadow: 0 6px 12px rgba(192, 192, 192, 0.5);
-            /* Sombra prateada */
         }
 
         .bronze {
             background-color: #cd7f32;
             box-shadow: 0 6px 12px rgba(205, 126, 50, 0.5);
-            /* Sombra bronze */
         }
 
-        /* Animação para destacar o time líder */
+        .highlight {
+            animation: highlight 1s infinite;
+        }
+
         @keyframes highlight {
             0% {
                 transform: scale(1);
@@ -118,25 +102,22 @@
             }
         }
 
-        .highlight {
-            animation: highlight 1s infinite;
-            /* Animação contínua */
-        }
-
         /* Efeito de confete */
         .confetti {
             position: fixed;
-            /* Mude para fixed para cobrir toda a tela */
             pointer-events: none;
             z-index: 5;
             left: 0;
-            /* Alinhar à esquerda */
             right: 0;
-            /* Alinhar à direita */
             top: -20;
-            /* Alinhar ao topo */
             bottom: 0;
-            /* Alinhar à parte inferior */
+        }
+
+        .confetti-piece {
+            width: 10px;
+            height: 10px;
+            position: absolute;
+            animation: fall linear infinite;
         }
 
         @keyframes fall {
@@ -149,14 +130,6 @@
             }
         }
 
-        .confetti-piece {
-            width: 10px;
-            height: 10px;
-            position: absolute;
-            animation: fall linear infinite;
-            /* Ajustar a animação para garantir que caia até o fundo */
-        }
-
         /* Cor das peças de confete */
         .confetti-piece:nth-child(odd) {
             background-color: #ff5733;
@@ -164,6 +137,19 @@
 
         .confetti-piece:nth-child(even) {
             background-color: #33ff57;
+        }
+
+        .history {
+            display: none;
+            background-color: #f9f9f9;
+            border-top: 1px solid #ccc;
+            padding: 10px;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .expanded {
+            display: block;
         }
     </style>
 </head>
@@ -192,10 +178,14 @@
     </div>
 
     <div class="confetti" id="confetti"></div>
+    <div id="scoreHistoryContainer">
+        <h2>Histórico de Pontuação</h2>
+    </div>
+
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
 
         // Configuração do Firebase
         const firebaseConfig = {
@@ -214,8 +204,7 @@
         // Função para criar confete
         function createConfetti() {
             const confettiContainer = document.getElementById('confetti');
-            // Remove confetes anteriores
-            confettiContainer.innerHTML = '';
+            confettiContainer.innerHTML = ''; // Remove confetes anteriores
             for (let i = 0; i < 100; i++) {
                 const piece = document.createElement('div');
                 piece.classList.add('confetti-piece');
@@ -226,7 +215,7 @@
             }
         }
 
-        // Função para atualizar a pontuação no pódio
+        // Função para atualizar a pontuação no pódio e adicionar histórico expansível
         async function updatePodium() {
             const teams = ['A', 'B', 'C', 'D'];
             const scores = [];
@@ -246,43 +235,195 @@
 
                 // Limpa o container dos times
                 const teamsContainer = document.getElementById('teamsContainer');
-                teamsContainer.innerHTML = ''; // Limpa os times antigos
+                teamsContainer.innerHTML = '';
 
                 // Atualiza a visualização do pódio
                 scores.forEach((entry, index) => {
                     const teamDiv = document.createElement('div');
                     teamDiv.className = 'team';
-                    teamDiv.innerHTML = `${entry.team}: <span id="score${entry.team.charAt(entry.team.length - 1)}">${entry.score}</span>`;
 
-                    // Atualiza a coroa de louros do time líder
+                    // Define a classe com base na posição
                     if (index === 0) {
-                        const crown = document.getElementById('crown');
-                        crown.style.display = 'block';
-                        document.getElementById('scoreLeader').textContent = entry.score;
-                        document.getElementById('leaderTeamName').textContent = entry.team; // Atualiza o nome do time líder
-                        teamDiv.classList.add('gold', 'highlight');
-                    }
-                    else if (index === 1) {
+                        teamDiv.classList.add('gold');
+                    } else if (index === 1) {
                         teamDiv.classList.add('silver');
                     } else if (index === 2) {
                         teamDiv.classList.add('bronze');
                     }
 
-                    teamsContainer.appendChild(teamDiv); // Adiciona cada time na ordem correta
+                    teamDiv.innerHTML = `
+                <div>${entry.team}: <span id="score${entry.team.charAt(entry.team.length - 1)}">${entry.score}</span></div>
+                <div class="history" id="history${entry.team.charAt(entry.team.length - 1)}"></div>`;
+
+                    teamDiv.addEventListener('click', () => toggleHistory(entry.team.charAt(entry.team.length - 1)));
+
+                    teamsContainer.appendChild(teamDiv);
                 });
 
-                // Inicia o confete
+                // Atualiza o time líder e sua pontuação
+                if (scores.length > 0) {
+                    document.getElementById('scoreLeader').textContent = scores[0].score; // Atualiza a pontuação do líder
+                    document.getElementById('leaderTeamName').textContent = scores[0].team; // Atualiza o nome do time líder
+                } else {
+                    document.getElementById('scoreLeader').textContent = 0; // Se não houver times, exibe 0
+                    document.getElementById('leaderTeamName').textContent = "Sem líder"; // Atualiza para sem líder
+                }
+
                 createConfetti();
             } catch (error) {
                 console.error("Erro ao atualizar o pódio: ", error);
             }
         }
 
-        // Chama a função ao carregar a página
+
+        async function fetchScoreHistory() {
+            try {
+                const historyRef = collection(db, "scoreHistory");
+                const historySnapshot = await getDocs(historyRef);
+
+                // Cria um array para armazenar os registros do histórico
+                const historyRecords = [];
+
+                // Percorre cada documento do histórico e armazena as informações
+                historySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    historyRecords.push({
+                        id: doc.id,
+                        team: data.team,
+                        user: data.user,
+                        points: data.points,
+                        timestamp: data.timestamp.toDate().toLocaleString() // Formata a data
+                    });
+                });
+
+                // Exibe o histórico em algum elemento HTML
+                displayScoreHistory(historyRecords);
+            } catch (error) {
+                console.error("Erro ao recuperar o histórico de pontuação: ", error);
+            }
+        }
+
+
+        function displayScoreHistory(records) {
+            const historyContainer = document.getElementById("scoreHistoryContainer");
+            historyContainer.innerHTML = ''; // Limpa o conteúdo anterior
+
+            // Adiciona o título para a seção de histórico
+            const title = document.createElement("h2");
+            title.textContent = "Histórico de Pontuação";
+            historyContainer.appendChild(title);
+
+            // Cria um objeto para armazenar os registros agrupados por time
+            const groupedRecords = {};
+
+            records.forEach(record => {
+                if (!groupedRecords[record.team]) {
+                    groupedRecords[record.team] = []; // Inicializa um array se o time não existir
+                }
+                groupedRecords[record.team].push(record); // Adiciona o registro ao time correspondente
+            });
+
+            // Itera sobre os times agrupados e cria a estrutura HTML com menu expansivo e tabela
+            for (const [team, records] of Object.entries(groupedRecords)) {
+                const details = document.createElement("details"); // Elemento expansivo
+
+                // Cria o botão expansível com estilo mais discreto
+                const summary = document.createElement("summary");
+                summary.textContent = `Ver Pontuação do Time: ${team}`;
+                summary.style.cursor = "pointer";
+                summary.style.padding = "8px 12px";
+                summary.style.marginBottom = "8px";
+                summary.style.borderRadius = "4px";
+                summary.style.backgroundColor = "#f9f9f9"; // Fundo mais claro
+                summary.style.color = "#333"; // Texto em cor escura
+                summary.style.boxShadow = "0px 2px 5px rgba(0, 0, 0, 0.1)"; // Sombra sutil
+                summary.style.fontWeight = "normal";
+
+                details.appendChild(summary);
+
+                // Cria uma tabela para os registros
+                const table = document.createElement("table");
+                table.style.borderCollapse = "collapse";
+                table.style.width = "100%";
+                table.style.marginTop = "10px"; // Distância da tabela para o botão
+
+                // Cabeçalho da tabela
+                const headerRow = document.createElement("tr");
+                const headers = ["Usuário", "Pontos", "Data"];
+                headers.forEach(headerText => {
+                    const headerCell = document.createElement("th");
+                    headerCell.textContent = headerText;
+                    headerCell.style.border = "1px solid #ddd";
+                    headerCell.style.padding = "8px";
+                    headerCell.style.backgroundColor = "#f2f2f2";
+                    headerRow.appendChild(headerCell);
+                });
+                table.appendChild(headerRow);
+
+                // Linhas de registros
+                records.forEach(record => {
+                    const row = document.createElement("tr");
+
+                    const userCell = document.createElement("td");
+                    userCell.textContent = record.user;
+                    userCell.style.border = "1px solid #ddd";
+                    userCell.style.padding = "8px";
+                    row.appendChild(userCell);
+
+                    const pointsCell = document.createElement("td");
+                    pointsCell.textContent = record.points;
+                    pointsCell.style.border = "1px solid #ddd";
+                    pointsCell.style.padding = "8px";
+                    row.appendChild(pointsCell);
+
+                    const dateCell = document.createElement("td");
+                    dateCell.textContent = record.timestamp;
+                    dateCell.style.border = "1px solid #ddd";
+                    dateCell.style.padding = "8px";
+                    row.appendChild(dateCell);
+
+                    table.appendChild(row);
+                });
+
+                details.appendChild(table); // Adiciona a tabela ao menu expansivo
+                historyContainer.appendChild(details); // Adiciona o menu ao contêiner
+            }
+        }
+
+        async function loadHistory(teamId, historyDiv) {
+            try {
+                const historyCollection = collection(db, teams / `team${teamId}/history`);
+                const historySnapshot = await getDocs(historyCollection);
+
+                if (!historySnapshot.empty) {
+                    let historyHTML = '<ul>';
+                    historySnapshot.forEach(doc => {
+                        const { date, points } = doc.data();
+                        historyHTML += `<li>${new Date(date.seconds * 1000).toLocaleString()}: ${points} pontos</li>;`
+                    });
+                    historyHTML += '</ul>';
+                    historyDiv.innerHTML = historyHTML;
+                } else {
+                    historyDiv.innerHTML = 'Nenhum histórico de pontuações encontrado.';
+                }
+            } catch (error) {
+                console.error("Erro ao carregar o histórico: ", error);
+                historyDiv.innerHTML = 'Erro ao carregar o histórico.';
+            }
+        }
+
+
+
+        // Animação inicial (abertura da cortina)
         window.addEventListener('load', () => {
-            document.getElementById('curtain').classList.add('open');
-            document.querySelector('h1').style.opacity = 1; // Exibe o título após a abertura da cortina
+            setTimeout(() => {
+                document.getElementById('curtain').classList.add('open');
+            }, 1000);
+            setTimeout(() => {
+                document.querySelector('h1').style.opacity = 1;
+            }, 2000);
             updatePodium();
+            fetchScoreHistory();
         });
     </script>
 </body>
