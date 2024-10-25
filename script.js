@@ -22,6 +22,13 @@ let currentTeam = ''; // Variável para armazenar o time atual
 
 // Função para abrir o modal da senha
 function openModal() {
+    // Verifica se a senha já está salva no localStorage
+    const savedPassword = localStorage.getItem("userPassword");
+    if (savedPassword) {
+        user = savedPassword; // Usa a senha salva
+        return; // Não abre o modal, pois a senha já está salva
+    }
+
     const modal = document.getElementById("passwordModal");
     modal.style.display = "block"; // Mostra o modal
 
@@ -60,13 +67,16 @@ function checkPassword() {
 
     if (senhas.includes(passwordInput)) {
         user = passwordInput;
-        console.log(user)
+
+        // Salva a senha no localStorage
+        localStorage.setItem("userPassword", user);
+
+        console.log(user);
         closeModal(); // Fecha o modal
     } else {
         alert("Senha incorreta!");
     }
 }
-
 // Função para mostrar o time correspondente ao parâmetro da URL
 // Função para mostrar o time correspondente ao parâmetro da URL
 function showTeamFromURL() {
