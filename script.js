@@ -47,14 +47,14 @@ function closeModal() {
 const senhas = [
     "Thiago",
     "Álvaro",
-    "⁠Júlia", 
-    "⁠Matheus",
-    "⁠Mariana Mendes",
-    "⁠Ana Camila",
+    "Júlia", 
+    "Matheus",
+    "Mariana Mendes",
+    "Ana Camila",
     "Rômulo",
     "Mari Chaves",
-    "⁠Luana",
-    "⁠Lucas",
+    "Luana",
+    "Lucas",
     "Gabriel",
     "DANIEL",
     "Cristhian",
@@ -63,22 +63,32 @@ const senhas = [
     "Lander",
     "Edward",
     "Gustavo",
-    "⁠Nicollas",
-    "⁠Andressa",
-]
+    "Nicollas",
+    "Andressa",
+];
+
 
 let user = ''
+
+function normalizeString(str) {
+    return str
+        .normalize("NFD") // Separa os caracteres acentuados
+        .replace(/[\u0300-\u036f]/g, "") // Remove os acentos
+        .toLowerCase() // Converte para minúsculas
+        .replace(/\s/g, ""); // Remove espaços
+}
 
 // Função para verificar a senha
 function checkPassword() {
     const passwordInput = document.getElementById("modalPassword").value;
+    const normalizedInput = normalizeString(passwordInput);
 
-    if (senhas.includes(passwordInput)) {
-        user = passwordInput;
+    // Verifica se a senha normalizada está na lista de senhas normalizadas
+    const senhaCorreta = senhas.some(senha => normalizeString(senha) === normalizedInput);
 
-        // Salva a senha no localStorage
+    if (senhaCorreta) {
+        user = passwordInput; // Armazena a senha como foi digitada
         localStorage.setItem("userPassword", user);
-
         console.log(user);
         closeModal(); // Fecha o modal
     } else {
