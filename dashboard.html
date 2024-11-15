@@ -216,64 +216,71 @@
         }
 
         // Função para atualizar a pontuação no pódio e adicionar histórico expansível
-        async function updatePodium() {
-            const teams = ['A', 'B', 'C', 'D'];
-            const scores = [];
+ // Função para atualizar a pontuação no pódio e adicionar histórico expansível
+async function updatePodium() {
+    const teams = [
+        { id: 'A', color: 'Azul' },
+        { id: 'B', color: 'Branco' },
+        { id: 'C', color: 'Vermelho' },
+        { id: 'D', color: 'Verde' }
+    ];
+    const scores = [];
 
-            try {
-                for (const team of teams) {
-                    const teamRef = doc(db, "teams", `team${team}`);
-                    const teamDoc = await getDoc(teamRef);
-                    if (teamDoc.exists()) {
-                        const score = teamDoc.data().score || 0;
-                        scores.push({ team: `Time ${team}`, score: score });
-                    }
-                }
-
-                // Classifica as pontuações do maior para o menor
-                scores.sort((a, b) => b.score - a.score);
-
-                // Limpa o container dos times
-                const teamsContainer = document.getElementById('teamsContainer');
-                teamsContainer.innerHTML = '';
-
-                // Atualiza a visualização do pódio
-                scores.forEach((entry, index) => {
-                    const teamDiv = document.createElement('div');
-                    teamDiv.className = 'team';
-
-                    // Define a classe com base na posição
-                    if (index === 0) {
-                        teamDiv.classList.add('gold');
-                    } else if (index === 1) {
-                        teamDiv.classList.add('silver');
-                    } else if (index === 2) {
-                        teamDiv.classList.add('bronze');
-                    }
-
-                    teamDiv.innerHTML = `
-                <div>${entry.team}: <span id="score${entry.team.charAt(entry.team.length - 1)}">${entry.score}</span></div>
-                <div class="history" id="history${entry.team.charAt(entry.team.length - 1)}"></div>`;
-
-                    teamDiv.addEventListener('click', () => toggleHistory(entry.team.charAt(entry.team.length - 1)));
-
-                    teamsContainer.appendChild(teamDiv);
-                });
-
-                // Atualiza o time líder e sua pontuação
-                if (scores.length > 0) {
-                    document.getElementById('scoreLeader').textContent = scores[0].score; // Atualiza a pontuação do líder
-                    document.getElementById('leaderTeamName').textContent = scores[0].team; // Atualiza o nome do time líder
-                } else {
-                    document.getElementById('scoreLeader').textContent = 0; // Se não houver times, exibe 0
-                    document.getElementById('leaderTeamName').textContent = "Sem líder"; // Atualiza para sem líder
-                }
-
-                createConfetti();
-            } catch (error) {
-                console.error("Erro ao atualizar o pódio: ", error);
+    try {
+        for (const team of teams) {
+            const teamRef = doc(db, "teams", `team${team.id}`);
+            const teamDoc = await getDoc(teamRef);
+            if (teamDoc.exists()) {
+                const score = teamDoc.data().score || 0;
+                scores.push({ team: `Time ${team.id} (${team.color})`, score: score });
             }
         }
+
+        // Classifica as pontuações do maior para o menor
+        scores.sort((a, b) => b.score - a.score);
+
+        // Limpa o container dos times
+        const teamsContainer = document.getElementById('teamsContainer');
+        teamsContainer.innerHTML = '';
+
+        // Atualiza a visualização do pódio
+        scores.forEach((entry, index) => {
+            const teamDiv = document.createElement('div');
+            teamDiv.className = 'team';
+
+            // Define a classe com base na posição
+            if (index === 0) {
+                teamDiv.classList.add('gold');
+            } else if (index === 1) {
+                teamDiv.classList.add('silver');
+            } else if (index === 2) {
+                teamDiv.classList.add('bronze');
+            }
+
+            teamDiv.innerHTML = `
+            <div>${entry.team}: <span id="score${entry.team.charAt(entry.team.length - 1)}">${entry.score}</span></div>
+            <div class="history" id="history${entry.team.charAt(entry.team.length - 1)}"></div>`;
+
+            teamDiv.addEventListener('click', () => toggleHistory(entry.team.charAt(entry.team.length - 1)));
+
+            teamsContainer.appendChild(teamDiv);
+        });
+
+        // Atualiza o time líder e sua pontuação
+        if (scores.length > 0) {
+            document.getElementById('scoreLeader').textContent = scores[0].score; // Atualiza a pontuação do líder
+            document.getElementById('leaderTeamName').textContent = scores[0].team; // Atualiza o nome do time líder
+        } else {
+            document.getElementById('scoreLeader').textContent = 0; // Se não houver times, exibe 0
+            document.getElementById('leaderTeamName').textContent = "Sem líder"; // Atualiza para sem líder
+        }
+
+        createConfetti();
+    } catch (error) {
+        console.error("Erro ao atualizar o pódio: ", error);
+    }
+}
+
 
 
         async function fetchScoreHistory() {
