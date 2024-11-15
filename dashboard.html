@@ -232,7 +232,7 @@ async function updatePodium() {
             const teamDoc = await getDoc(teamRef);
             if (teamDoc.exists()) {
                 const score = teamDoc.data().score || 0;
-                scores.push({ team: `Time (${team.color})`, score: score });
+                scores.push({ team: `Time ${team.color}`, score: score });
             }
         }
 
