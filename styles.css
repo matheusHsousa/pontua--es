@@ -23,6 +23,8 @@
       text-align: center;
       position: relative;
       /* Para posicionar o modal */
+      overflow: auto;
+      height: 100%;
   }
 
   h1 {

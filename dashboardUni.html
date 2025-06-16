@@ -156,7 +156,7 @@
 
 <body>
     <div style="display: flex; justify-content: end;">
-        <span class="podium-icon" onclick="window.location.href='index.html'"
+        <span class="podium-icon" onclick="window.location.href='uni.html'"
             style="font-size: 30px; cursor: pointer; text-align: end;">🔙</span>
     </div>
 
@@ -217,12 +217,12 @@
 
         // Função para atualizar a pontuação no pódio e adicionar histórico expansível
         async function updatePodium() {
-            const teams = ['A', 'B', 'C', 'D', 'E', 'F'];
+            const teams = ['Da', 'Aser', 'Man', 'Ben', 'Juda', 'Rub'];
             const scores = [];
 
             try {
                 for (const team of teams) {
-                    const teamRef = doc(db, "teams", `team${team}`);
+                     const teamRef = doc(db, "teams", `unit${team}`);
                     const teamDoc = await getDoc(teamRef);
                     if (teamDoc.exists()) {
                         const score = teamDoc.data().score || 0;

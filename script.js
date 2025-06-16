@@ -20,53 +20,6 @@ const db = getFirestore(app);
 
 let currentTeam = ''; // Variável para armazenar o time atual
 
-// Função para abrir o modal da senha
-function openModal() {
-    // Verifica se a senha já está salva no localStorage
-    const savedPassword = localStorage.getItem("userPassword");
-    if (savedPassword) {
-        user = savedPassword; // Usa a senha salva
-        return; // Não abre o modal, pois a senha já está salva
-    }
-
-    const modal = document.getElementById("passwordModal");
-    modal.style.display = "block"; // Mostra o modal
-
-    document.getElementById("submitPassword").onclick = () => {
-        checkPassword();
-    };
-}
-
-// Função para fechar o modal
-function closeModal() {
-    const modal = document.getElementById("passwordModal");
-    modal.style.display = "none"; // Oculta o modal
-    document.getElementById("modalPassword").value = ''; // Limpa o campo da senha
-}
-
-const senhas = [
-    "Thiago",
-    "Álvaro",
-    "Júlia", 
-    "Matheus",
-    "Mariana Mendes",
-    "Ana Camila",
-    "Rômulo",
-    "Mari Chaves",
-    "Luana",
-    "Lucas",
-    "Gabriel",
-    "DANIEL",
-    "Cristhian",
-    "Marjorie",
-    "Kaique",
-    "Lander",
-    "Edward",
-    "Gustavo",
-    "Nicollas",
-    "Andressa",
-];
-
 
 let user = ''
 
@@ -78,23 +31,6 @@ function normalizeString(str) {
         .replace(/\s/g, ""); // Remove espaços
 }
 
-// Função para verificar a senha
-function checkPassword() {
-    const passwordInput = document.getElementById("modalPassword").value;
-    const normalizedInput = normalizeString(passwordInput);
-
-    // Verifica se a senha normalizada está na lista de senhas normalizadas
-    const senhaCorreta = senhas.some(senha => normalizeString(senha) === normalizedInput);
-
-    if (senhaCorreta) {
-        user = passwordInput; // Armazena a senha como foi digitada
-        localStorage.setItem("userPassword", user);
-        console.log(user);
-        closeModal(); // Fecha o modal
-    } else {
-        alert("Senha incorreta!");
-    }
-}
 // Função para mostrar o time correspondente ao parâmetro da URL
 // Função para mostrar o time correspondente ao parâmetro da URL
 function showTeamFromURL() {
@@ -221,7 +157,7 @@ async function updateScoreDisplay() {
 
 // Função para inicializar os times no Firestore
 async function initializeTeams() {
-    const teams = ['A', 'B', 'C', 'D'];
+    const teams = ['A', 'B', 'C', 'D', 'E', 'F'];
     try {
         for (const team of teams) {
             const teamRef = doc(db, "teams", `team${team}`);

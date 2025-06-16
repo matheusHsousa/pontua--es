@@ -6,121 +6,128 @@
     <title>Sistema de Pontuação</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js" type="module" defer></script>
+    <script src="uni.js" type="module" defer></script>
     <link rel="manifest" href="manifest.json">
 </head>
 
 <body>
+
     <div style="display: flex; justify-content: start; padding: 10px;">
-        <span onclick="window.location.href='hub.html'" style="cursor: pointer; font-size: 24px;">⬅️ Voltar</span>
+    <span onclick="window.location.href='hub.html'" 
+          style="cursor: pointer; font-size: 24px;">⬅️ Voltar</span>
     </div>
 
+
     <div class="container">
-        <button onclick="aa()" style="display: none;">Penalizar Time</button> <!-- Inicialmente oculto -->
+        <button onclick="aa()" style="display: none;">Penalizar Unidade</button> 
 
         <div style="display: flex; justify-content: end;">
-            <span class="podium-icon" onclick="window.location.href='dashboard.html'"
+            <span class="podium-icon" onclick="window.location.href='dashboardUni.html'"
                 style="font-size: 20px; cursor: pointer; text-align: end;">🏆</span>
         </div>
 
         <div id="redirectButtons" style="display: none;">
-            <div style="display: flex; flex-direction: column; width: 100%; gap: 30px; height: 70px; margin-top: 40px;">
-                <button onclick="window.location.href='?team=A'"
-                    style="padding: 20px 15px; background-color: #595959;">Time A</button>
-                <button onclick="window.location.href='?team=B'"
-                    style="padding: 20px 15px; background-color: #595959;">Time B</button>
-                <button onclick="window.location.href='?team=C'"
-                    style="padding: 20px 15px; background-color: #595959;">Time C</button>
-                <button onclick="window.location.href='?team=D'"
-                    style="padding: 20px 15px; background-color: #595959;">Time D</button>
-                <button onclick="window.location.href='?team=E'"
-                    style="padding: 20px 15px; background-color: #595959;">Time E</button>
-                <button onclick="window.location.href='?team=F'"
-                    style="padding: 20px 15px; background-color: #595959;">Time F</button>
+            <div style="display: flex; flex-direction: column; width: 100%; gap: 30px; margin-top: 40px;">
+                <button onclick="window.location.href='?unit=Da'"
+                    style="padding: 20px 15px; background-color: #595959;">Corinto - Dã</button>
+                <button onclick="window.location.href='?unit=Aser'"
+                    style="padding: 20px 15px; background-color: #595959;">Galácia - Aser</button>
+                <button onclick="window.location.href='?unit=Man'"
+                    style="padding: 20px 15px; background-color: #595959;">Éfeso - Manassés</button>
+                <button onclick="window.location.href='?unit=Ben'"
+                    style="padding: 20px 15px; background-color: #595959;">Filipos - Benjamim</button>
+                <button onclick="window.location.href='?unit=Juda'"
+                    style="padding: 20px 15px; background-color: #595959;">Colossos - Judá</button>
+                <button onclick="window.location.href='?unit=Rub'"
+                    style="padding: 20px 15px; background-color: #595959;">Tessalônica - Rúben</button>
             </div>
         </div>
 
-        <div id="teamA" class="team hidden">
+        <!-- Seções para cada unidade -->
+        <div id="unitDa" class="team hidden">
             <div style="display: flex; justify-content: end;">
-                <div class="score" id="scoreA">0</div>
+                <div class="score" id="scoreDa">0</div>
                 <span>pts.</span>
             </div>
-            <h2>Time A</h2>
+            <h2>Corinto - Dã</h2>
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt=""
                     style="width: 90%;">
             </div>
-            <input type="number" id="inputScoreA" placeholder="Adicionar Pontuação">
-            <button onclick="addScore('A')">Adicionar Pontuação</button>
+            <input type="number" id="inputScoreDa" placeholder="Adicionar Pontuação">
+            <button onclick="addScore('Da')">Adicionar Pontuação</button>
         </div>
-        <div id="teamB" class="team hidden">
+
+        <div id="unitAser" class="team hidden">
             <div style="display: flex; justify-content: end;">
-                <div class="score" id="scoreB">0</div>
+                <div class="score" id="scoreAser">0</div>
                 <span>pts.</span>
             </div>
-            <h2>Time B</h2>
+            <h2>Galácia - Aser</h2>
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt=""
                     style="width: 90%;">
             </div>
-            <input type="number" id="inputScoreB" placeholder="Adicionar Pontuação">
-            <button onclick="addScore('B')">Adicionar Pontuação</button>
+            <input type="number" id="inputScoreAser" placeholder="Adicionar Pontuação">
+            <button onclick="addScore('Aser')">Adicionar Pontuação</button>
         </div>
-        <div id="teamC" class="team hidden">
+
+        <div id="unitMan" class="team hidden">
             <div style="display: flex; justify-content: end;">
-                <div class="score" id="scoreC">0</div>
+                <div class="score" id="scoreMan">0</div>
                 <span>pts.</span>
             </div>
-            <h2>Time C</h2>
+            <h2>Éfeso - Manassés</h2>
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt=""
                     style="width: 90%;">
             </div>
-            <input type="number" id="inputScoreC" placeholder="Adicionar Pontuação">
-            <button onclick="addScore('C')">Adicionar Pontuação</button>
+            <input type="number" id="inputScoreMan" placeholder="Adicionar Pontuação">
+            <button onclick="addScore('Man')">Adicionar Pontuação</button>
         </div>
-        <div id="teamD" class="team hidden">
+
+        <div id="unitBen" class="team hidden">
             <div style="display: flex; justify-content: end;">
-                <div class="score" id="scoreD">0</div>
+                <div class="score" id="scoreBen">0</div>
                 <span>pts.</span>
             </div>
-            <h2>Time D</h2>
+            <h2>Filipos - Benjamim</h2>
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt=""
                     style="width: 90%;">
             </div>
-            <input type="number" id="inputScoreD" placeholder="Adicionar Pontuação">
-            <button onclick="addScore('D')">Adicionar Pontuação</button>
+            <input type="number" id="inputScoreBen" placeholder="Adicionar Pontuação">
+            <button onclick="addScore('Ben')">Adicionar Pontuação</button>
         </div>
-            <div id="teamE" class="team hidden">
+
+        <div id="unitJuda" class="team hidden">
             <div style="display: flex; justify-content: end;">
-                <div class="score" id="scoreE">0</div>
+                <div class="score" id="scoreJuda">0</div>
                 <span>pts.</span>
             </div>
-            <h2>Time E</h2>
+            <h2>Colossos - Judá</h2>
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt=""
                     style="width: 90%;">
             </div>
-            <input type="number" id="inputScoreE" placeholder="Adicionar Pontuação">
-            <button onclick="addScore('E')">Adicionar Pontuação</button>
+            <input type="number" id="inputScoreJuda" placeholder="Adicionar Pontuação">
+            <button onclick="addScore('Juda')">Adicionar Pontuação</button>
         </div>
-          </div>
-            <div id="teamF" class="team hidden">
+
+        <div id="unitRub" class="team hidden">
             <div style="display: flex; justify-content: end;">
-                <div class="score" id="scoreF">0</div>
+                <div class="score" id="scoreRub">0</div>
                 <span>pts.</span>
             </div>
-            <h2>Time F</h2>
+            <h2>Tessalônica - Rúben</h2>
             <div style="display: flex; flex-direction: column; align-items: center;">
                 <img src="./imagens/fundo_branco__1__page-0001__1_-ai-brush-removebg-306tohxo (2).png" alt=""
                     style="width: 90%;">
             </div>
-            <input type="number" id="inputScoreF" placeholder="Adicionar Pontuação">
-            <button onclick="addScore('F')">Adicionar Pontuação</button>
+            <input type="number" id="inputScoreRub" placeholder="Adicionar Pontuação">
+            <button onclick="addScore('Rub')">Adicionar Pontuação</button>
         </div>
     </div>
-
 
     <!-- Modal para entrada da senha -->
     <div id="passwordModal" class="modal">
@@ -131,22 +138,24 @@
         </div>
     </div>
 
+    <!-- Modal para penalização -->
     <div id="penaltyModal" class="modal">
         <div class="modal-content" style="display: flex; flex-direction: column;">
-            <h2>Penalizar Time</h2>
-            <label for="penaltyTeam">Escolha o Time:</label>
-            <select id="penaltyTeam" style="padding: 8px; border-radius: 5px; font-size: 16px;">
-                <option value="A">Time A</option>
-                <option value="B">Time B</option>
-                <option value="C">Time C</option>
-                <option value="D">Time D</option>
+            <h2>Penalizar Unidade</h2>
+            <label for="penaltyUnit">Escolha a Unidade:</label>
+            <select id="penaltyUnit" style="padding: 8px; border-radius: 5px; font-size: 16px;">
+                <option value="Da">Corinto - Dã</option>
+                <option value="Aser">Galácia - Aser</option>
+                <option value="Man">Éfeso - Manassés</option>
+                <option value="Ben">Filipos - Benjamim</option>
+                <option value="Juda">Colossos - Judá</option>
+                <option value="Rub">Tessalônica - Rúben</option>
             </select>
             <input type="number" id="penaltyPoints" placeholder="Pontos a subtrair">
             <div style="display: flex; flex-direction: column; gap: 10px;">
                 <button id="submitPenalty">Aplicar Penalização</button>
                 <button onclick="closePenaltyModal()">Cancelar</button>
             </div>
-
         </div>
     </div>
 

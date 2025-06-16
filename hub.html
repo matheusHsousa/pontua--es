@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Sistema de Pontuação</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="manifest.json">
+    <style>
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+        }
+
+        #hub {
+            display: none;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        #hub button {
+            margin: 10px;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            cursor: pointer;
+        }
+
+        /* Inputs com mesmo estilo */
+        #modalPassword,
+        #modalPasswordText {
+            flex: 1;
+            padding-right: 40px;
+            font-size: 1rem;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        /* input text começa escondido */
+        #modalPasswordText {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Modal de senha -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content" style="display: flex; flex-direction: column;">
+            <h2>Digite a Senha</h2>
+            <div style="position: relative; display: flex; align-items: center;">
+                <input type="password" id="modalPassword" placeholder="Senha" />
+                <input type="text" id="modalPasswordText" placeholder="Senha" />
+                <button id="togglePassword" type="button"
+                    style="position: absolute; right: 10px; background: none; border: none; cursor: pointer; font-size: 16px;">
+                    👁️
+                </button>
+            </div>
+            <button id="submitPassword" style="margin-top: 15px;">Confirmar</button>
+        </div>
+    </div>
+
+    <div id="hub">
+        <h2>Escolha para qual pontuação:</h2>
+        <button id="btnIndex">Ir para Equipes</button>
+        <button id="btnUni">Ir para Unidades</button>
+    </div>
+    <script src="./auth.js" defer></script>
+</body>
+
+</html>
