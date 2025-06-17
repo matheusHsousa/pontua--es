@@ -19,8 +19,6 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 let currentTeam = ''; // Variável para armazenar o time atual
-
-
 let user = ''
 
 function normalizeString(str) {
