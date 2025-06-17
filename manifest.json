@@ -1,7 +1,7 @@
 {
     "name": "Pontuação Soldados",
     "short_name": "Soldados Pontos",
-    "start_url": "hub.html",
+    "start_url": "./hub.html",
     "display": "standalone",
     "background_color": "#FFFFFF",
     "theme_color": "#000000",
